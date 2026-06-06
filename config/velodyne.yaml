@@ -1,0 +1,55 @@
+/**:
+    ros__parameters:
+        feature_extract_enable: false
+        point_filter_num: 4 #4..original #4 aur 5 pe better results hain
+        max_iteration: 3 #3..original #100 
+        filter_size_surf: 0.4 #0.5..original #0.2
+        filter_size_map: 0.5 #0.5..original #0.4
+        cube_side_length: 100.0 #1000.0
+        runtime_pos_log_enable: false
+        map_file_path: "./test.pcd"
+
+        common:
+            lid_topic:  "/bf_lidar/point_cloud_out" #"/velodyne_points"
+            imu_topic:  "/synced_ap_imu" #"/ap/imu/experimental/data" #"/bf_lidar/imu_out" #"/imu/data"
+
+            imu_init_count: 1000 #meine add kiya ..ye no of iterations hain jo imu processor karega taki noise aur bias calculate kr paye......
+            #make sure iterations <= imu hz * time for which you were perfectly still 
+            #..still isliye hona taki noise aur bias acche se calculate ho
+            #aur iski default value 10 hai code mein
+
+            time_sync_en: false         # ONLY turn on when external time synchronization is really not possible
+            time_offset_lidar_to_imu: 0.0 # Time offset between lidar and IMU calibrated by other algorithms, e.g. LI-Init (can be found in README).
+                                        # This param will take effect no matter what time_sync_en is. So if the time offset is not known exactly, please set as 0.0
+
+        preprocess:
+            lidar_type: 2               # 1 for Livox serials LiDAR, 2 for Velodyne LiDAR, 3 for ouster LiDAR, 
+            scan_line: 24 #32
+            scan_rate: 11 #10                # only need to be set for velodyne, unit: Hz,
+            timestamp_unit: 1 #2            # the unit of time/t field in the PointCloud2 rostopic: 0-second, 1-milisecond, 2-microsecond, 3-nanosecond.
+            blind: 1.5 #2.0
+
+        mapping:
+            acc_cov: 0.1 #0.1
+            gyr_cov: 0.01 #0.1
+            b_acc_cov: 0.001 #0.0001
+            b_gyr_cov: 0.00002 #0.0001
+            fov_degree:    72.0 #360.0
+            det_range:     100.0
+            extrinsic_est_en:  false      # true: enable the online estimation of IMU-LiDAR extrinsic,
+            extrinsic_T: [0.07, 0.2, 0.33] #[0.0, 0.15, -0.02] .. adjacent on chair with camera #[ 0.03, 0.07, -0.01]..adjacent on chair with cube    #[ -0.22, -0.05, -0.3]....rover with cube #[ 0., 0., 0.28]
+            extrinsic_R: [ 1., 0., 0., #ye mat change krna agar cube pe mavros ya ap ..ya fir d455 ka imu ..ya blickfeld ka imu use kr rhe hain toh
+                        0., 1., 0.,   #par translation matrix har baari change krna 
+                        0., 0., 1.]
+
+        publish:
+            path_en: true #false
+            map_en: true #ye param main files mein pehle se tha..but yaml mein meine add kiya
+            scan_publish_en:  true       # false: close all the point cloud output
+            dense_publish_en: true        # false: low down the points number in a global-frame point clouds scan.
+            scan_bodyframe_pub_en: true  # true: output the point cloud scans in IMU-body-frame
+
+        pcd_save:
+            pcd_save_en: true
+            interval: -1                 # how many LiDAR frames saved in each pcd file; 
+                                        # -1 : all frames will be saved in ONE pcd file, may lead to memory crash when having too much frames.
