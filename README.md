@@ -19,7 +19,7 @@ Note:You don't need to make any other changes
 
 5. Run this command:
    ```
-   ros2 launch FAST_LIO mapping.lauch.py
+   ros2 launch fast_lio mapping.lauch.py
    ```
 
 
